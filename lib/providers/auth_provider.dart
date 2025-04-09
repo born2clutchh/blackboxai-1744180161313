@@ -5,7 +5,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void login(String email, String password) {
     // In a real app, this would call an authentication API
-    state = const AuthState.authenticated(userId: '123');
+    state = AuthState.authenticated(
+      userId: '123',
+      email: email,
+      name: 'User', // Would come from API response
+      joinDate: DateTime.now(),
+    );
   }
 
   void logout() {
@@ -16,13 +21,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
 class AuthState {
   final bool isAuthenticated;
   final String? userId;
+  final String? email;
+  final String? name;
+  final DateTime? joinDate;
 
-  const AuthState.authenticated({required this.userId})
-      : isAuthenticated = true;
+  const AuthState.authenticated({
+    required this.userId,
+    this.email = 'user@example.com',
+    this.name = 'User',
+    this.joinDate,
+  }) : isAuthenticated = true;
 
   const AuthState.unauthenticated()
       : isAuthenticated = false,
-        userId = null;
+        userId = null,
+        email = null,
+        name = null,
+        joinDate = null;
 }
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
